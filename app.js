@@ -11,9 +11,6 @@ app.set('port', process.env.PORT || 3001);
 
 
 
-
-
-
 app.get('/raumfeld/renderer/stop/:name', function(req,res){
 
 	// starts discovering devices asynchronously
@@ -21,11 +18,11 @@ app.get('/raumfeld/renderer/stop/:name', function(req,res){
 	// fetch a device and do something with it. Method calls on a device return a promise object
 	manager.on("rendererFound", function(renderer) {
     		renderer.getVolume().then(function(value) {
-			var id='Speaker Wohnbereich';
+			var id='Bad';
 			if(renderer.name === id){
         			console.log('found renderer \"'+renderer.name + '\". Volume is ' + value);
 				console.log('sending stop to Renderer \"'+id+'\"');
-				renderer.mute();
+				renderer.pause();
 				return;
 			}
     		});
@@ -40,12 +37,12 @@ app.get('/raumfeld/renderer/start/:name', function(req,res){
 	// fetch a device and do something with it. Method calls on a device return a promise object
 	manager.on("rendererFound", function(renderer) {
     		renderer.getVolume().then(function(value) {
-			var id = 'Speaker Wohnbereich';
+			var id = 'Bad';
 			if(renderer.name === id){
         			console.log('found renderer \"'+renderer.name + '\". Volume is ' + value);
 				console.log('sending start to Renderer \"'+id+'\"');
-				renderer.unmute();
-			
+				renderer.play();
+				return;			
 			}
     		});
 	});
