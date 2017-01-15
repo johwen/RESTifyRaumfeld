@@ -11,43 +11,36 @@ app.set('port', process.env.PORT || 3001);
 
 
 
-app.get('/raumfeld/renderer/stop/:name', function(req,res){
+var performSimpleRendererAction = function(controllingRenderer, action){
 
 	// starts discovering devices asynchronously
 	manager.discover("all",0);
 	// fetch a device and do something with it. Method calls on a device return a promise object
 	manager.on("rendererFound", function(renderer) {
     		renderer.getVolume().then(function(value) {
-			var id='Bad';
+			var id=controllingRenderer;
 			if(renderer.name === id){
         			console.log('found renderer \"'+renderer.name + '\". Volume is ' + value);
-				console.log('sending stop to Renderer \"'+id+'\"');
-				renderer.pause();
+				console.log('sending '+action+' to Renderer \"'+id+'\"');
+				//actionToPerform.call();
+				switch(action){
+					case 'pause': renderer.pause(); break;
+					case 'play' : renderer.play(); break;
+					case 'stop' : renderer.stop(); break;
+				}
 				return;
 			}
     		});
 	});
-res.send('Renderer \"'+req.params.name+'\" has been stopped');
+};
+
+
+app.get('/raumfeld/renderer/:name/:action', function(req,res){
+	performSimpleRendererAction(req.params.name,req.params.action);
+	res.send('Renderer \"'+req.params.name+'\" has been '+req.params.action+'ed');
 });
 
-app.get('/raumfeld/renderer/start/:name', function(req,res){
 
-	// starts discovering devices asynchronously
-	manager.discover("all",0);
-	// fetch a device and do something with it. Method calls on a device return a promise object
-	manager.on("rendererFound", function(renderer) {
-    		renderer.getVolume().then(function(value) {
-			var id = 'Bad';
-			if(renderer.name === id){
-        			console.log('found renderer \"'+renderer.name + '\". Volume is ' + value);
-				console.log('sending start to Renderer \"'+id+'\"');
-				renderer.play();
-				return;			
-			}
-    		});
-	});
-res.send('Renderer \"'+req.params.name+'\" has been started');
-})
 
 app.listen(app.get('port'), function(){
 console.log('listening on port '+ app.get('port'));
