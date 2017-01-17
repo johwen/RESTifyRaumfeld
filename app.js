@@ -11,7 +11,7 @@ app.set('port', process.env.PORT || 3001);
 
 
 
-var performSimpleRendererAction = function(controllingRenderer, action){
+var performSimpleRendererAction = function(controllingRenderer, oAction){
 
 	// starts discovering devices asynchronously
 	manager.discover("all",0);
@@ -21,12 +21,14 @@ var performSimpleRendererAction = function(controllingRenderer, action){
 			var id=controllingRenderer;
 			if(renderer.name === id){
         			console.log('found renderer \"'+renderer.name + '\". Volume is ' + value);
-				console.log('sending '+action+' to Renderer \"'+id+'\"');
+				console.log('sending '+oAction.action+' to Renderer \"'+id+'\"');
 				//actionToPerform.call();
-				switch(action){
+				switch(oAction.action){
 					case 'pause': renderer.pause(); break;
 					case 'play' : renderer.play(); break;
 					case 'stop' : renderer.stop(); break;
+					case 'setVolume' : renderer.setVolume(oAction.volume); break;
+					case 'getVolume' : return renderer.getVolume();
 				}
 				return;
 			}
@@ -36,14 +38,21 @@ var performSimpleRendererAction = function(controllingRenderer, action){
 
 
 app.get('/raumfeld/renderer/:name/:action', function(req,res){
-	performSimpleRendererAction(req.params.name,req.params.action);
+	performSimpleRendererAction(req.params.name,{ action : req.params.action });
 	res.send('Renderer \"'+req.params.name+'\" has been '+req.params.action+'ed');
 });
 
 
+
+app.get('/raumfeld/renderer/:name/setVolume/:volume', function(req,res){
+	performSimpleRendererAction(req.params.name,{ action : "setVolume", volume : req.params.volume+"" });
+	res.send('Renderer \"'+req.params.name+'\" has been '+req.params.action+'ed');
+});
 
 app.listen(app.get('port'), function(){
 console.log('listening on port '+ app.get('port'));
 console.log('use "localhost/raumfeld/renderer/stop/:id" to stop renderer');
 console.log('use "localhost/raumfeld/renderer/start/:id" to start renderer');
 });
+
+
