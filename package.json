@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+	"start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -11,5 +12,8 @@
   "dependencies": {
     "node-raumfeld": "0.4.4",
     "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "node-inspector": "^1.1.1"
   }
 }

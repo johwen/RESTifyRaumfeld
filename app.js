@@ -52,6 +52,7 @@ app.get('/raumfeld/renderer/:name/setVolume/:volume', function(req,res){
 app.listen(app.get('port'), function(){
 console.log('listening on port '+ app.get('port'));
 console.log('use "localhost/raumfeld/renderer/stop/:id" to stop renderer');
+console.log('example: http://localhost:3001/raumfeld/renderer/Wohnbereich/stop ');
 console.log('use "localhost/raumfeld/renderer/start/:id" to start renderer');
 });
 
